@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+  <title>T3: take a break every Twenty minutes by looking Twenty meters away for Twenty seconds</title>
+</head>
+
+<body class="h-full bg-gray-800 bg-opacity-50 text-white">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root" class="flex h-full">
+
+    <div class="p-6 max-w-sm m-auto bg-gray-600 rounded-xl shadow-md flex flex-col items-center space-x-4">
+      <div class="text-xl font-medium text-white">Time to take a break!</div>
+      <p class="text-gray-300">Try to look outside for 20 seconds.</p>
+
+      <p>Time left?</p>
+      <button id="closeBtn" class="mt-8 py-2 px-2 rounded-lg shadow-md text-white bg-red-800 hover:bg-red-600 focus:outline-none">Not Right Now!</button>
+    </div>
+
+  </div> <!-- root -->
+  <script>
+    const ipc = require('electron').ipcRenderer;
+
+    function sendMessage() {
+      if (ipc == undefined) {
+        console.warn("unable to send message, ipcRenderer was undefined:", arguments);
+        return;
+      }
+      ipc.send('interstitial', ...arguments);
+    }
+    
+    (function() {
+      let closeBtn = document.querySelector('#closeBtn');
+      closeBtn.addEventListener('click', (e) => {
+        sendMessage('close-clicked');
+        window.close();
+      });
+
+      setTimeout(() => { window.close(); }, 20 * 1000);
+    })();
+  </script>
+</body>
+
+</html>
